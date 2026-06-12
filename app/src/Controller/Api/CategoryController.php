@@ -70,10 +70,20 @@ class CategoryController extends AbstractApiController
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(Category $category, EntityManagerInterface $em): JsonResponse
     {
+        // Refus si la catégorie contient encore des produits
+        if ($category->getProducts()->count() > 0) {
+            return new JsonResponse([
+                'error' => [
+                    'status' => 409,
+                    'message' => 'Impossible de supprimer une catégorie contenant des produits.',
+                    'productCount' => $category->getProducts()->count(),
+                ],
+            ], 409);
+        }
+
         $em->remove($category);
         $em->flush();
 
-        // 204 No Content : suppression réussie, pas de corps de réponse
         return new JsonResponse(null, 204);
     }
 
