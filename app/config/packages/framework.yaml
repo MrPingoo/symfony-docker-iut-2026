@@ -1,0 +1,16 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    # Les sessions sont inutiles pour une API stateless (auth par token).
+    session: false
+
+    # Sérialisation : on s'appuie sur les attributs PHP (#[Groups], etc.)
+    serializer:
+        enabled: true
+
+    property_info:
+        enabled: true
+
+when@test:
+    framework:
+        test: true

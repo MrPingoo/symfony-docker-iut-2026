@@ -1,0 +1,53 @@
+security:
+    # Algorithme de hachage des mots de passe (auto = bcrypt/argon selon dispo)
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # D'où viennent les utilisateurs : ici, l'entité User via son email
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        # Pas de sécurité sur les outils de dev
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Endpoint de connexion : génère un token JWT à partir de email/password
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        # Tout le reste de l'API : protégé par token JWT
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+    # Contrôle d'accès par URL
+    access_control:
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        # Lecture publique du catalogue (GET), écriture réservée aux connectés
+        - { path: ^/api/products, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/categories, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+when@test:
+    security:
+        password_hashers:
+            # Hachage plus rapide en test
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

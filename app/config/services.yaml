@@ -1,0 +1,25 @@
+# Configuration des services de l'application.
+# https://symfony.com/doc/current/service_container.html
+parameters:
+
+services:
+    # Configuration par défaut : autowiring + autoconfiguration
+    _defaults:
+        autowire: true       # injecte automatiquement les dépendances
+        autoconfigure: true  # enregistre les services (commandes, listeners...) automatiquement
+        bind:
+            # Rend %kernel.debug% injectable via un argument nommé $debug
+            bool $debug: '%kernel.debug%'
+
+    # Rend toutes les classes de src/ disponibles comme services
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Le listener qui transforme nos exceptions en réponses JSON propres
+    App\EventListener\ApiExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }

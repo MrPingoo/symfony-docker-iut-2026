@@ -1,0 +1,17 @@
+###> symfony/framework-bundle ###
+/app/var/
+/app/vendor/
+/app/.env.local
+/app/.env.*.local
+/app/public/bundles/
+###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/app/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> phpunit/phpunit ###
+/app/.phpunit.result.cache
+###< phpunit/phpunit ###
+
+.DS_Store
