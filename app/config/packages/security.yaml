@@ -40,6 +40,7 @@ security:
         # Lecture publique du catalogue (GET), écriture réservée aux connectés
         - { path: ^/api/products, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api/categories, methods: [GET], roles: PUBLIC_ACCESS }
+        - { path: ^/api/health, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
