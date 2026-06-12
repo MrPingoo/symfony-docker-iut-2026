@@ -50,6 +50,10 @@ class Product
     #[Assert\NotNull(message: 'La catégorie est obligatoire.')]
     private ?Category $category = null;
 
+    #[ORM\Column(length: 50, unique: true, nullable: true)]
+    #[Groups(['product:read', 'product:write'])]
+    private ?string $sku = null;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -123,6 +127,17 @@ class Product
     {
         $this->category = $category;
 
+        return $this;
+    }
+
+    public function getSku(): ?string
+    {
+        return $this->sku;
+    }
+
+    public function setSku(?string $sku): static
+    {
+        $this->sku = $sku;
         return $this;
     }
 }
